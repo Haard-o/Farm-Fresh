@@ -5,7 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css">
+    <!-- Load Firebase SDK scripts using traditional script tags -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
     <link rel="stylesheet" href="stylesheet.css">
+    <script>
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyBp_LonV2RPtwfUo7Zk5shWxumR05vQ3Ho",
+
+            authDomain: "farm-fresh-e92c5.firebaseapp.com",
+
+            projectId: "farm-fresh-e92c5",
+
+            storageBucket: "farm-fresh-e92c5.appspot.com",
+
+            messagingSenderId: "181161236352",
+
+            appId: "1:181161236352:web:cedd1cb7290c6476595365"
+
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+
+    </script>
     <script>
         function stickyMenu() {
             var sticky = document.getElementById('sticky');
@@ -48,14 +74,23 @@
                 <li>Cart</li>
             </a>
         </ul>
+
         <div class="search-box">
             <form action="">
                 <input type="text" placeholder="Search..." name="search" class="search-input" />
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
+        <button id="signup" class="a-menu">
+            SignUp
+        </button>
+        <button id="login" class="a-menu">
+            login
+        </button>
     </div>
     <!-- Home Page Begins -->
+    <br />
+    <section id="firebaseui-auth-container"></section>
     <div class="container">
         <a href="#vegetables">
             <div class="categories">
@@ -500,6 +535,52 @@
         <i class="far fa-copyright fa-1x"></i>&copy;2024 by NIVIDA
     </div>
     <!-- Footer Ends Here -->
+    <!-- Bootstrap JS and Firebase SDK scripts -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const signup = document.getElementById('signup');
+            const login = document.getElementById('login');
+            const uiConfig = {
+                credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+                signInOptions: [
+                    // Add Email/Password provider
+                    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                ],
+
+                callbacks: {
+                    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                        return false;
+                    },
+                },
+            };
+            const ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+            signup.addEventListener('click', () => {
+                if (firebase.auth().currentUser) {
+                    firebase.auth().signOut().then(() => {
+                        signup.innerHTML = 'SignUp';
+                    }).catch((error) => {
+                        console.error('Sign Out Error', error);
+                    });
+                } else {
+                    // Start Firebase UI for login
+                    ui.start('#firebaseui-auth-container', uiConfig);
+                }
+            });
+
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    signup.innerHTML = 'LOGOUT';
+                } else {
+                    signup.innerHTML = 'SignUp';
+                }
+            });
+
+        });
+    </script>
+
+
 
 </body>
 
